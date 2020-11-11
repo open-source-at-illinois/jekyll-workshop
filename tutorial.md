@@ -10,9 +10,20 @@ So, that being said, whenever you see the page tell you to *do* something, we re
 
 
 ## Important Notes
+
 1.) We're using "Linus" as a dummy name to put. Do put your own name instead :)
 2.) This tutorial is harder than the default tutorial, but it should give you a better understanding of what Jekyll is. If you have any questions, send a message in the Discord and @Sahan!
 3.) If you have any improvements or suggestions to make, please make a PR to this repo, or open an issue. We'd love to use this workshop for future years in the club, so we want this to be as useful as possible!
+
+# Table of Contents
+
+* Exercise 1: Setup
+* Exercise 2: Liquid and Front Matter
+* Exercise 3.1: Using layouts to wrap your text content
+* Exercise 3.2: Layouts on layouts???
+* Exercise 4.1: Why don't we take our data, and push it somewhere else!?
+* Exercise 4.2: Jekyll Posts
+* Exercise 5: Publish on GitHub Pages!
 
 
 ## Exercise 1: Setup
@@ -26,6 +37,7 @@ Readings:
 
 Go through the procedure in Part 1 to initialize jekyll in your project. After that, create `index.html` in the root of your project such that it has "Linus's UIUC Survival Guide" as an `h1` element, and the title is "Linus UIUC Tips":
 
+### /index.html
 ```html
 <!DOCTYPE html>
 <html>
@@ -39,7 +51,9 @@ Go through the procedure in Part 1 to initialize jekyll in your project. After t
 </html>
 ```
 
-To test, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`. When you're good, keep going on.
+To test, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`. Notice that every time you make a change in the source files in your Jekyll project, Jekyll will automatically refresh with the new content. This it really easy to see what changes you've made. When you've got Jekyll working, keep going on.
+
+Clarification: when you go to a certain URL on the web, like google.com, what you'll first see is the contents of `index.html` under that URL. So that's why us changing our `index.html` has the consequences we see!
 
 ## Exercise 2: Liquid and Front Matter
 
@@ -53,9 +67,12 @@ Readings:
 - [YAML 101](https://gutsytechster.wordpress.com/2019/03/21/yaml-101/) up to and including "Multi-line Strings" if you aren't familiar with YAML. 
 
 
-Now that you've read both Part 2 and Part 3, you'll be writing some HTML and Liquid in order to write each of your classes and write some notes on them! Here's the format you'll implement:
+Now that you've read both Part 2 and Part 3, you'll be writing some HTML and Liquid in order to write each of your classes and write some notes on them! Here's what your index.html will look like...
 
-```yaml
+### /index.html
+
+```
+---
 classes:
     - name: ECE 120
       rating: 3
@@ -70,7 +87,12 @@ classes:
       rating: 4
       difficulty: 4
       remarks: Data structures are easy, Git is hard and I keep forgetting to push before the deadline
+---
+
+<!-- Your HTML here...--->
 ```
+
+, and this is what you'll get at the end:
 
 ![](exercise2-goal.png)
 
@@ -110,6 +132,8 @@ One of the great things of Jekyll is that you can write in Markdown. If you've e
 
 That being said, let's get into it!
 
+Just a recap on layouts: layouts are special templates from which Jekyll makes new pages. They are stored in the special directory `_layouts`.
+
 First, convert your `index.html` so that it's the "default" layout. Be sure to read [Part 4](https://jekyllrb.com/docs/step-by-step/04-layouts/) to understand how to make Jekyll recognize the HTML file as a layout. We want the "content" to be wrapped inside a `<div>` element.
 
 Then, create a file `index.md`. After Jekyll parses it, it will be generated as `index.html` and Jekyll will convert all Markdown to HTML. 
@@ -119,6 +143,8 @@ This is what we are working towards:
 ![](exercise3-1-goal.png)
 
 And this is what we want `index.md` to look like in the end:
+
+### /index.md
 
 ```md
 ---
@@ -145,6 +171,7 @@ classes:
 
 But these are just, like, my opinions. Pls don't sue. 
 ```
+
 (Sidenote: Mixing HTML and Markdown is a-okay -- Jekyll will do a pass on the file to convert all Markdown to HTML later anyway.)
 To test, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`. When you're good, read on.
 
@@ -171,6 +198,7 @@ You can do this by...you guessed it, putting `layout: default` in the front matt
 
 After you've successfully refactoring our initial layout as two separate layouts, create an `about.md` page at the root of your project directory, with this content (or something similar):
 
+### /about.md
 ```
 ---
 layout: default
@@ -188,8 +216,200 @@ Your `about.html` page should look something like this:
 
 ![](./exercise3-2-goal.png)
 
+By the end, this is what your directory structure should look like:
+
+```
+.
+├── about.md
+├── Gemfile
+├── Gemfile.lock
+├── index.md
+└── _layouts
+    ├── default.html
+    └── ratings.html
+```
+
 To test your `index.html`, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`. 
 To test your `about.html`, run the above commands and then navigate to `http://127.0.0.1:4000/about.html`.
 
-
 When you're good, read on.
+
+## Exercise 4.1: Why don't we take our data, and push it somewhere else!?
+
+Readings:
+- [Part 6](https://jekyllrb.com/docs/step-by-step/06-data-files/)
+
+So, let's say on this website, you also wanted to put some of your social media so that people who benefited from your website can see what you've been up to. But, where do we put our handles and usernames?
+
+Moreover, how are we going to access that data from multiple places on the website?
+
+There are two approaches: one is using `_config.yml`, which is a special file at the root of the directory for site-wide configurations. However, this is really inconvenient for development: `jekyll serve` will NOT automatically refresh if you make changes to your `_config.yml`. This makes debugging insane. Trust me, I know. So, we're going to reserve `_config.yml` for *actual* site configurations and not for simple text stuff like social media handles. 
+
+For our social medias, we're going to use one of Jekyll's magic directories: `_data`. We can put all of our class data in a file under this directory, say for example `_data/social.yml`, like so:
+
+### /_data/social.yml
+
+```yaml
+facebook: osai-linus
+instagram: "@osaitorvalds" # In YAML, if your string has an @ sign in the beginning, you need to put the string in quotes
+snapchat: osaifoss4life
+email: osai-linus@illinois.edu
+```
+
+, and then we can access this data by using the Liquid variable `site.data.social`. Because the `social.yml` file is located in `_data`, it is available site-wide as `site.data.social`. Contrast this to `page.classes`, which is in `index.md`: because the `classes` YAML entry is defined in the front matter of the page `index.md`, it is available under the `page` variable and not the `site.data` variable.
+
+Go ahead and complete the refactor: make a new directory `_data` and a new file `_data/social.yml`, move all the data into `_data/social.yml`, and update your `_layouts/default.html` to have a horizontal rule element (`<hr/>`) and then your social handles at the bottom of the webpage as a bunch of `<p>` tags -- by the end, your browser should look like this:
+
+![](./exercise4-1-goal.png)
+
+
+By the end, this is what your directory structure should look like:
+
+```
+.
+├── about.md
+├── _data
+│   └── social.yml
+├── Gemfile
+├── Gemfile.lock
+├── index.md
+└── _layouts
+    ├── default.html
+    └── ratings.html
+```
+
+To test your `index.html`, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`.
+
+When you're ready, keep reading.
+
+## Exercise 4.2: Posts, at last!
+
+Readings:
+- [Part 8](https://jekyllrb.com/docs/step-by-step/08-blogging/)
+
+Currently, we just list all of the classes we've taken so far on the front page. While this is certainly an approach, this is not exactly scalable -- after all, we're going to be at UIUC for a while, and we'll be taking a good amount of courses. So, what do we do?
+
+Conveniently, Jekyll has this notion of "posts". Posts are subpages in your site, kind of like what blog posts might be. Posts live in the magic Jekyll directory `_posts` in the root of your directory, and each file has the special (and mandatory) format `YYYY-MM-DD-title.md`. Jekyll will pull the post title and date from the filename, and it will get all the other necessary data from the post file contents.
+
+Posts are part of what make Jekyll great for things like keeping track of recipes, book reports, blogging, and whatnot. So, let's get to it!
+
+Step 1 is to split the "classes" YAML entry in `index.md` into three different files, and set the layout to "ratings" in the frontmatter:
+
+### /_posts/2020-11-09-ECE120.md
+
+```
+---
+layout: ratings
+name: ECE 120
+rating: 3
+difficulty: 2
+remarks: LC3 is cool, I guess, but I thought I was going to build the next Linux
+warnings: Do your homework, folks.
+---
+
+So here's the thing about ECE 120...
+```
+
+### /_posts/2020-11-10-MATH214.md
+
+```
+---
+layout: ratings
+name: MATH 214
+rating: 2
+difficulty: 5
+remarks: 3 integrals 5 me
+---
+
+What's there to say? Integrals.
+```
+
+### /_posts/2020-11-11-CS225.md
+
+```
+---
+layout: ratings
+name: CS 225
+rating: 4
+difficulty: 4
+remarks: Data structures are easy, Git is hard and I keep forgetting to push before the deadline
+---
+
+Did you ever hear the Tragedy of 225 the CS? I thought not...
+```
+
+Step 2 is to change the ratings layout so that it no longer iterates through the classes variable, and instead, it just takes the data from the page itself. 
+
+(Hint: this involves removing the "for" loop and changing the variable names: hint 2: where do the variables come from? The `page` or the `site`?)
+
+Step 3 is to create a new layout `_layouts/home.html` based on the default layout so that we can put a link to each post!
+
+By the end, your homepage should look something like this:
+
+![](./exercise4-2-goal-index.png)
+
+And each post should look something like this -- example for the CS225 page:
+
+![](./exercise4-2-goal-post.png)
+
+
+By the end, your file structure should look something like this:
+
+```
+.
+├── about.md
+├── _data
+│   └── social.yml
+├── Gemfile
+├── Gemfile.lock
+├── index.md
+├── _layouts
+│   ├── default.html
+│   ├── home.html
+│   └── ratings.html
+└── _posts
+    ├── 2020-11-09-ECE120.md
+    ├── 2020-11-10-MATH214.md
+    └── 2020-11-11-CS225.md
+```
+
+To test your `index.html`, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`.
+When you're ready, keep reading.
+
+
+## Exercise 5: GitHub Deployment!
+
+Reading:
+- [Jekyll GitHub Pages Documentation](https://jekyllrb.com/docs/github-pages/)
+
+Phew, you've finally made it to the end! All that's left for you to do is to put your website on GitHub Pages.
+So, step 0 would be to create a `.gitignore` to make sure we don't commit any of Jekyll's build files:
+
+### /.gitignore
+```
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+```
+
+Step 1 would be to follow the instructions in the reading to make your Jekyll project compatible with GitHub (by adding the "github-pages" gem and by putting the `relative_url` filter where necessary).
+
+Step 2 would then to be initialize a git repository in the root of the project, add everything with `git add .` and commit everything with `git commit -m "Initial commit"`, and then create a GitHub repo on your account and push your Jekyll project to GitHub.
+
+After that, follow the instructions [here](https://forestry.io/docs/guides/hosting/github-pages-jekyll/) to get your pages up and running. And then you're done!
+
+
+## What's next?
+
+Well, as you can see, the page you have now is missing a few things. For example,
+
+* There's no navigation mechanism to get from one page to another, except for going into posts.
+* Only raw HTML is being rendered -- there's no styling at all.
+* There are plenty of cool little plugins to use for Jekyll, like an RSS plugin.
+
+And more! You can either fix up this workshop project and make it your own, or you can start anew with a Jekyll template and start modifying it to your heart's content. Example: https://github.com/jekyll/minima. (Fun fact, https://open-source-at-illinois.github.io/workshops/ is based off of this theme!)
+
+You can also start exploring Jekyll Themes to use for your next blogging project/documentation-like project. Though it might seem like everything costs money, there are a good number of polished, free Jekyll templates to use.
+
+That's it. Have fun!
