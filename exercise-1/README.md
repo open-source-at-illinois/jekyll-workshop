@@ -29,9 +29,8 @@ By the end of it, your file structure should look like this:
 .
 ├── Gemfile
 ├── Gemfile.lock
-├── index.html
-└── _site
-    └── index.html
+└──  index.html
+
 ```
 
 To test, run `jekyll serve`, or if that's not working, run `bundle exec jekyll serve`. Notice that every time you make a change in the source files in your Jekyll project, Jekyll will automatically refresh with the new content. This it really easy to see what changes you've made. When you've got Jekyll working, move on to the next exercise.
