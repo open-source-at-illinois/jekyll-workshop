@@ -1,4 +1,6 @@
-# Jekyll Workshop
+# Self-paced Jekyll Workshop
+
+Introduction slides found [here](https://docs.google.com/presentation/d/1zNe8Pmkakt6vEjjXDGeE_d0_8KyhqSINMHW9xTVHfrs/edit#slide=id.ga153efbecc_0_72).
 
 Hello everybody! Welcome to the Jekyll workshop by OSAI.
 
